@@ -1,4 +1,4 @@
-import THREE, { Vector3, Line, Color, LineBasicMaterial, Geometry, Object3D } from 'three'
+import THREE, { Vector3, Line, Color, LineBasicMaterial, Geometry, Object3D, CylinderGeometry, MeshBasicMaterial, Mesh, Matrix4, Quaternion } from 'three'
 
 const defaultProps = {
 	lineColor: new Color(0xFFFFFF),
@@ -19,9 +19,9 @@ export default class Branch {
 				this.props.begin.z + Math.random()*this.props.branchLength - this.props.branchLength/2
 			);
 		}
+		/*
 		this.material = new LineBasicMaterial({
 			color: this.props.lineColor,
-			// color: Math.round(Math.random()*this.props.lineColor),
 			linewidth: this.props.lineWidth,
 		});
 		this.geometry = new Geometry();
@@ -32,6 +32,26 @@ export default class Branch {
 		this.line = new Line(this.geometry, this.material);
 		this.obj = new Object3D();
 		this.obj.add(this.line);
+		*/
+		this.material = new MeshBasicMaterial({
+			color: this.props.lineColor,
+		});
+		this.geometry = new CylinderGeometry(
+			this.props.lineWidth, 	// radius top
+			this.props.lineWidth,	// radius bottom
+			this.props.branchLength,// height
+			10, // radius segments
+			1,  // height segments
+		);
+		const quaternion = new Quaternion().setFromUnitVectors( this.props.begin, this.props.end );
+		// this.geometry.applyMatrix( new Matrix4().makeTranslation(0, this.props.branchLength/2, 0) );
+		this.geometry.applyMatrix( new Matrix4().makeRotationFromQuaternion( quaternion ) );
+		this.obj = new Mesh(this.geometry, this.material);
+		this.obj.position.set(
+			this.props.begin.x,
+			this.props.begin.y,
+			this.props.begin.z
+		);
 		this.get = () => this.obj;
 	}
 
