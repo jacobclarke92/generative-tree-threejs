@@ -129,7 +129,7 @@ export default class App extends Component {
 
 		orbit += this.params.rotateSpeed / 1000;
 
-		const { lineWidth, lineThinning, lineColor, leafColor, branchLength } = this.params;
+		const { lineWidth, lineThinning, lineColor, leafColor, leafSize, branchLength } = this.params;
 
 		if(this.iterationCount < this.params.iterations) {
 			this.iterationCount ++;
@@ -154,6 +154,7 @@ export default class App extends Component {
 					} else {
 						const branch = new Branch({
 							lineWidth: lastBranch.props.lineWidth - lineThinning,
+							leafSize,
 							branchLength,
 							lineColor: stringToColor(lineColor),
 							iteration: this.iterationCount,
