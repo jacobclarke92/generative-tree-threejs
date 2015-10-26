@@ -25,14 +25,15 @@ class params {
 		this.splitChance = 0.06;
 		this.iterations = 100;
 		this.branchLength = 18;
+		this.leafSize = 6;
 		this.param3 = 1;
 	}
 }
 
 export default class App extends Component {
 
-	constructor() {
-		super();
+	constructor(props) {
+		super(props);
 
 		// make param overlay
 		this.params = new params();
@@ -48,12 +49,13 @@ export default class App extends Component {
 		this.gui.add(this.params, 'splitChance', 0, 0.2).onChange(() => this.reseed());
 		this.gui.add(this.params, 'trimChance', 0, 0.5).onChange(() => this.reseed());
 		this.gui.add(this.params, 'branchLength', 1, 50).onChange(() => this.reseed());
-		this.gui.add(this.params, 'lineWidth', 0.5, 8);
+		this.gui.add(this.params, 'lineWidth', 0.5, 8).onChange(() => this.reseed());;
 		this.gui.add(this.params, 'lineThinning', 0.01, 0.2).onChange(() => this.reseed());
+		this.gui.add(this.params, 'leafSize', 1, 15);
 		this.gui.add(this.params, 'param3', {Stopped: 0, Slow: 1, Fast: 2});
 		
 		// bind param changes to rerender
-		const ignoreUpdate = ['bgcolor','seed', 'branchLength', 'splitChance', 'lineThinning'];
+		const ignoreUpdate = ['bgcolor','seed', 'branchLength', 'splitChance', 'lineWidth', 'lineThinning'];
 		for(let controller of this.gui.__controllers) {
 			if(ignoreUpdate.indexOf(controller.property) < 0) {
 				controller.onChange(() => this.paramsUpdated());
@@ -66,7 +68,7 @@ export default class App extends Component {
 			height: window.innerHeight,
 		}
 
-		document.addEventListener('click', () => {
+		props.stage.addEventListener('click', () => {
 			this.params.seed = Math.round(Math.random()*5000);
 			this.reseed();
 		})
@@ -99,6 +101,7 @@ export default class App extends Component {
 				leafColor: stringToColor(this.params.leafColor),
 				lineColor: stringToColor(this.params.lineColor),
 				lineWidth: this.params.lineWidth,
+				leafSize: this.params.leafSize,
 			});
 		}
 	}

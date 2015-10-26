@@ -3,6 +3,7 @@ import THREE, { Vector3, Line, Color, MeshBasicMaterial, SphereGeometry, Mesh, O
 const defaultProps = {
 	begin: new Vector3(0,0,0),
 	color: 0xaf86e0,
+	leafSize: 6,
 }
 
 export default class Leaf {
@@ -12,7 +13,7 @@ export default class Leaf {
 		this.material = new MeshBasicMaterial({
 			color: this.props.leafColor,
 		});
-		this.geometry = new SphereGeometry( 7, 8, 8 );
+		this.geometry = new SphereGeometry( this.props.leafSize, 8, 8 );
 		this.mesh = new Mesh(this.geometry, this.material);
 		this.obj = new Object3D();
 		this.obj.add(this.mesh);
@@ -28,6 +29,9 @@ export default class Leaf {
 		const nextProps = Object.assign({}, this.props, props);
 		if(nextProps.leafColor != this.props.leafColor) {
 			this.material.color = new Color(nextProps.leafColor);
+		}
+		if(nextProps.leafSize != this.props.leafSize) {
+			this.mesh.geometry = new SphereGeometry( nextProps.leafSize, 8, 8 );
 		}
 		this.props = nextProps;
 	}
